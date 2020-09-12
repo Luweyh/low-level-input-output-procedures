@@ -1,4 +1,4 @@
-TITLE Designing low-level I/O procedures and Macros     (Project_6.asm)
+TITLE Designing low-level I/O procedures and Macros     (low-level-IO.asm)
 
 ; Author: Luwey Hon
 ; Description: This program ask the user for 10 numbers that
