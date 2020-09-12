@@ -1,10 +1,6 @@
 TITLE Designing low-level I/O procedures and Macros     (Project_6.asm)
 
 ; Author: Luwey Hon
-; Last Modified: 6/6/2020
-; OSU email address: Honl@oregonstate.edu 
-; Course number/section: CS 271 C400
-; Project Number: 6                Due Date: 6/7/2020
 ; Description: This program ask the user for 10 numbers that
 ; must fit in the 32 bit register. It valides the numbers making
 ; sure a proper number is inserted. After inserted numbers, it will
@@ -151,9 +147,9 @@ read_val PROC
 	
 ; beginning of outter loop	
 get_the_string:
-	push ecx						; save outter loop counter
+	push ecx					; save outter loop counter
 	push eax
-	display_string	[ebp + 8]		; display string to enter number	
+	display_string	[ebp + 8]			; display string to enter number	
 	get_string		[ebp + 12]		; save the string
 	cmp eax, 11						
 	ja invalid_char					; string length can't be > 11 with sign +/-
@@ -163,13 +159,13 @@ get_the_string:
 	dec esi
 	mov edi, [ebp + 16]				; the number array
 	mov ecx, eax					; string length as inner loop counter
-	mov edx, 1						; multiplier for how many digit of current number
-	mov ebx, 0						; will hold the converted string number
+	mov edx, 1					; multiplier for how many digit of current number
+	mov ebx, 0					; will hold the converted string number
 
 	
 ; beginning of inner loop
 read_the_string:
-	std							; going backwards
+	std						; going backwards
 	mov eax, 0					; to help stop overflow in future loops
 	lodsb						; load the string byte
 	cmp eax, 43					; ascii for +
@@ -178,7 +174,7 @@ read_the_string:
 	je negative_num
 
 check_digits:
-	cmp	eax, 48				    ; ascii for 0
+	cmp	eax, 48				    	; ascii for 0
 	jl invalid_char
 	cmp eax, 57					; ascii for 9
 	ja invalid_char
@@ -194,23 +190,23 @@ store_char:
 	ja invalid_char
 	
 ; increase multiplier by 10 for each digit
-	mov eax, edx		; edx holds multiplier
+	mov eax, edx			; edx holds multiplier
 	push ebx
 	mov ebx, 10			; multiply by 10
 	imul ebx
 	pop ebx
 	mov edx, eax		; new multipler back in edx. 
-						; It goes 1, 10 , 100, 1000... for digit multiplier
+				; It goes 1, 10 , 100, 1000... for digit multiplier
 
 	loop read_the_string	; end of beginning loop
 	jmp fill_array
 	
 	negative_num:
-	;cmp ebx, -2147483648	; for outlier case at minimum 32 bit sign value
+	;cmp ebx, -2147483648		; for outlier case at minimum 32 bit sign value
 	;je fill_array
-	cmp ecx, 1				; ecx 1 checks the last reversed spot which is either a +/- or digit
+	cmp ecx, 1			; ecx 1 checks the last reversed spot which is either a +/- or digit
 	jne invalid_char		; if a - sign is found in wrong location
-	neg ebx					; turn the number negative
+	neg ebx				; turn the number negative
 
 	positive_num:
 	cmp ecx, 1
@@ -220,19 +216,19 @@ store_char:
 fill_array:
 	mov edi, [ebp + 16]		; the number array
 	pop eax
-	mov [edi + eax], ebx	; ebx holds the converted string number
+	mov [edi + eax], ebx		; ebx holds the converted string number
 	add eax, 4
-	pop ecx					; restore outter loop counter
+	pop ecx				; restore outter loop counter
 	dec ecx
 	cmp ecx, 0
 	je finished
-	jmp get_the_string			; end of outter loop
+	jmp get_the_string		; end of outter loop
 	
 invalid_char:
 	;neg ebx
 	;cmp ebx, -2147483648			; checking in case overflow read minimum sign value
 	;je read_the_string
-	pop eax							; allign stack
+	pop eax					; allign stack
 	pop ecx
 	mov edx, 0
 	display_string [ebp + 20]		; display error message
@@ -306,8 +302,8 @@ display_array PROC
 	push ebp
 	mov ebp, esp 
 	mov esi, [ebp + 8]		; @ numbers array
-	mov ecx, 10				; 10 numbers for counter
-	mov edx, 0				; array pointer
+	mov ecx, 10			; 10 numbers for counter
+	mov edx, 0			; array pointer
 
 	;prints the title
 	call CrLf
@@ -318,8 +314,8 @@ display_array PROC
 	iterate_array:
 	pushad
 	push [ebp + 16]			; @ string to print negative sign
-	push [ebp + 12]			; @ empty string to fill in
-	push esi				; the array
+	push [ebp + 12]			; @ empty string to fill in the array
+	push esi				
 	call write_val			; sub-procedure to print number in strings
 	popad
 	add esi, 4
@@ -346,12 +342,12 @@ write_val PROC
 	push ebp
 	mov ebp, esp
 	mov edi, [ebp + 12]		; @ stirng buffer to store
-	mov ecx, 0				; array pointer
+	mov ecx, 0			; array pointer
 	mov esi, [ebp +8]		; @ some number
 	mov eax, [esi]
 	cmp eax, 0
 	jnl check_positive		; if it is a positive number
-	neg eax					; negate negative number to make it positive
+	neg eax				; negate negative number to make it positive
 
 check_negative:
 	cdq
@@ -369,7 +365,7 @@ check_positive:
 	mov ebx, 10
 	idiv ebx				; dividing by 10
 	add edx, 48				; convert reminader to ascii
-	mov [edi + ecx], edx	; store it in array
+	mov [edi + ecx], edx			; store it in array
 	add ecx, 4				; point to next index
 	cmp eax, 0				; when you cant divide anymore. stop loop
 	je	finish_pos			
@@ -383,9 +379,9 @@ finish_pos:
 ; reads the array backwards and display as string
 	add edi, ecx			; points to last element
 	check_num:
-	sub edi, 4				; to read backwards
+	sub edi, 4			; to read backwards
 	display_string edi		; macro to display string
-	sub ecx, 3				; allign DWORD loop
+	sub ecx, 3			; allign DWORD loop
 	loop check_num
 
 	pop ebp
