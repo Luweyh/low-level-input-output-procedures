@@ -1,1 +1,2 @@
 # low-level-input-output-procedures
+Creating build-in commands for MASM's readVal and writeval. Requires converting string to integers and integers to strings using ascii values. At the end of program it should have 4 commands called getString, displayString, readVal, and writeVal. All conversion must be done the manual way by converting ascii value of numbers and strings. Program involes using procedures and macros to moduralize the code
